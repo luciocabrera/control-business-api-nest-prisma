@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model documentTypes {
+  documentTypeId Int         @id @default(autoincrement())
+  name           String      @unique @db.VarChar(36)
+  customers      customers[]
+  createdAt      DateTime    @default(now())
+  createdBy      String      @db.VarChar(150)
+  updatedAt      DateTime    @updatedAt
+  updatedBy      String      @db.VarChar(150)
+}
+
+model titles {
+  titleId   Int         @id @default(autoincrement())
+  name      String      @unique @db.VarChar(24)
+  customers customers[]
+  createdAt DateTime    @default(now())
+  createdBy String      @db.VarChar(150)
+  updatedAt DateTime    @updatedAt
+  updatedBy String      @db.VarChar(150)
+}
+
+model customers {
+  customerId     Int           @id @default(autoincrement())
+  initials       String?       @db.VarChar(10)
+  firstName      String        @db.VarChar(150)
+  lastName       String?       @db.VarChar(150)
+  documentId     String        @db.VarChar(24)
+  documentType   documentTypes @relation(fields: [documentTypeId], references: [documentTypeId], onUpdate: Restrict)
+  documentTypeId Int
+  createdAt      DateTime      @default(now())
+  createdBy      String        @db.VarChar(150)
+  updatedAt      DateTime      @updatedAt
+  updatedBy      String        @db.VarChar(150)
+  addresses      addresses[]
+  title          titles?       @relation(fields: [titleId], references: [titleId])
+  titleId        Int?
+  invoices       invoices[]
+}
+
+model addresses {
+  addressId  Int       @id @default(autoincrement())
+  country    String    @db.VarChar(80)
+  state      String    @db.VarChar(80)
+  city       String    @db.VarChar(80)
+  line1      String    @db.VarChar(80)
+  line2      String?   @db.VarChar(80)
+  postalCode String    @db.VarChar(16)
+  customer   customers @relation(fields: [customerId], references: [customerId], onUpdate: Restrict)
+  customerId Int
+}
+
+model invoices {
+  invoiceId       Int               @id @default(autoincrement())
+  invoice         String            @unique @db.VarChar(12)
+  date            DateTime
+  subtotal        Decimal           @db.Decimal(18, 2)
+  total           Decimal           @db.Decimal(18, 2)
+  taxes           Decimal           @db.Decimal(18, 2)
+  taxesPercentage Decimal           @db.Decimal(18, 2)
+  customer        customers         @relation(fields: [customerId], references: [customerId], onUpdate: Restrict)
+  customerId      Int
+  createdAt       DateTime          @default(now())
+  createdBy       String            @db.VarChar(150)
+  updatedAt       DateTime          @updatedAt
+  updatedBy       String            @db.VarChar(150)
+  invoicesDetails invoicesDetails[]
+}
+
+model products {
+  productId       Int               @id @default(autoincrement())
+  code            String            @unique @db.VarChar(8)
+  name            String            @unique @db.VarChar(148)
+  description     String?           @db.VarChar(224)
+  price           Decimal           @db.Decimal(18, 2)
+  createdAt       DateTime          @default(now())
+  createdBy       String            @db.VarChar(150)
+  updatedAt       DateTime          @updatedAt
+  updatedBy       String            @db.VarChar(150)
+  invoicesDetails invoicesDetails[]
+}
+
+model invoicesDetails {
+  quantity      Decimal  @db.Decimal(18, 2)
+  priceUnit     Decimal  @db.Decimal(18, 2)
+  priceQuantity Decimal  @db.Decimal(18, 2)
+  invoice       invoices @relation(fields: [invoiceId], references: [invoiceId], onUpdate: Restrict)
+  invoiceId     Int
+  product       products @relation(fields: [productId], references: [productId], onUpdate: Restrict)
+  productId     Int
+
+  @@unique([invoiceId, productId])
+}
