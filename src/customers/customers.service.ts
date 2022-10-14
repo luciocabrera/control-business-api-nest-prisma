@@ -89,8 +89,14 @@ export class CustomersService {
     where: Prisma.customersWhereUniqueInput,
     data: UpdateCustomerDto
   ): Promise<CustomerDto> {
-    const { firstName, lastName, addresses, documentTypeName, titleName } =
-      data;
+    const {
+      firstName,
+      lastName,
+      addresses,
+      documentId,
+      documentTypeName,
+      titleName
+    } = data;
     const { customerId } = where;
     const createdBy = 'USER_ID_HERE';
     const updatedBy = 'USER_ID_HERE';
@@ -102,6 +108,7 @@ export class CustomersService {
         addresses: true
       },
       data: {
+        documentId,
         firstName,
         lastName,
         addresses: {

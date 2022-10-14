@@ -8,7 +8,6 @@ export class UpdateCustomerDto extends OmitType(CustomerDto, [
   'addresses',
   'currentAddress',
   'documentType',
-  'documentId',
   'documentTypeId',
   'title',
   'titleId',

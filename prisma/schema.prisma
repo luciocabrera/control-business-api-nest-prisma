@@ -46,6 +46,8 @@ model customers {
   title          titles?       @relation(fields: [titleId], references: [titleId])
   titleId        Int?
   invoices       invoices[]
+
+  @@unique([documentId, documentTypeId])
 }
 
 model addresses {

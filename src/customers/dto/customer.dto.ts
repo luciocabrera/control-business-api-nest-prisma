@@ -39,7 +39,7 @@ export class CustomerDto implements CustomerWithParameters {
   @IsString()
   @IsNotEmpty()
   @Expose()
-  @MaxLength(150)
+  @MaxLength(50)
   @ApiProperty({
     example: 'Lucio',
     description: 'The first name of the customer'
@@ -48,7 +48,7 @@ export class CustomerDto implements CustomerWithParameters {
 
   @IsString()
   @Expose()
-  @MaxLength(150)
+  @MaxLength(50)
   @ApiProperty({
     example: 'Cabrera',
     description: 'The last name of the customer'
