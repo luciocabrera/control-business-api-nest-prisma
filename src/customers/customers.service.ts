@@ -18,7 +18,8 @@ export class CustomersService {
       include: {
         documentType: { select: { name: true } },
         title: { select: { name: true } },
-        addresses: true
+        addresses: true,
+        phones: true
       }
     });
 
@@ -38,7 +39,8 @@ export class CustomersService {
       include: {
         documentType: { select: { name: true } },
         title: { select: { name: true } },
-        addresses: true
+        addresses: true,
+        phones: true
       },
       ...params
     });
@@ -46,18 +48,20 @@ export class CustomersService {
   }
 
   async create(data: CreateCustomerDto): Promise<CustomerDto> {
-    const { addresses, documentTypeName, titleName, ...rest } = data;
+    const { addresses, phones, documentTypeName, titleName, ...rest } = data;
     const createdBy = 'USER_ID_HERE';
     const updatedBy = 'USER_ID_HERE';
 
     const customer = await this.prisma.customers.create({
       include: {
         documentType: true,
-        addresses: true
+        addresses: true,
+        phones: true
       },
       data: {
         ...rest,
         addresses: { create: { ...addresses } },
+        phones: { create: { ...phones } },
         documentType: {
           connectOrCreate: {
             where: { name: documentTypeName },
@@ -93,6 +97,7 @@ export class CustomersService {
       firstName,
       lastName,
       addresses,
+      phones,
       documentId,
       documentTypeName,
       titleName
@@ -105,7 +110,8 @@ export class CustomersService {
       where,
       include: {
         documentType: true,
-        addresses: true
+        addresses: true,
+        phones: true
       },
       data: {
         documentId,
@@ -114,6 +120,10 @@ export class CustomersService {
         addresses: {
           deleteMany: { customerId: customerId },
           create: { ...addresses }
+        },
+        phones: {
+          deleteMany: { customerId: customerId },
+          create: { ...phones }
         },
         documentType: {
           connectOrCreate: {

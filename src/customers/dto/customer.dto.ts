@@ -1,14 +1,16 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { documentTypes, Prisma, titles } from '@prisma/client';
 import { Exclude, Expose, Type } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { AddressDto } from 'src/addresses/dto/address.dto';
+import { PhoneDto } from 'src/phones/dto/phone.dto';
 
 const customerWithParameters = Prisma.validator<Prisma.customersArgs>()({
   include: {
     documentType: true, // { select: { name: true } },
     title: true,
-    addresses: true
+    addresses: true,
+    phones: true
   }
 });
 
@@ -28,6 +30,7 @@ export class CustomerDto implements CustomerWithParameters {
 
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   @Expose()
   @MaxLength(10)
   @ApiProperty({
@@ -103,6 +106,20 @@ export class CustomerDto implements CustomerWithParameters {
   @Expose()
   get currentAddress() {
     return this.addresses?.[0];
+  }
+
+  @Expose()
+  @ApiProperty({
+    description: 'Phone numbers of the customer',
+    type: PhoneDto
+  })
+  @Type(() => PhoneDto)
+  @Expose()
+  phones: PhoneDto[];
+
+  @Expose()
+  get defaultPhone() {
+    return this.phones?.[0];
   }
 
   @IsString()

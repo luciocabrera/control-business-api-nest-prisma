@@ -1,12 +1,15 @@
 import { Expose, Type } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { CreateCustomerAddressDto } from './create-customer-address.dto';
+
+import { CreateCustomerPhoneDto } from './create-customer-address.dto';
+import { CreateCustomerAddressDto } from './create-customer-phone.dto';
 import { CustomerDto } from './customer.dto';
 
 export class CreateCustomerDto extends OmitType(CustomerDto, [
   'customerId',
   'addresses',
+  'phones',
   'documentType',
   'documentTypeId',
   'title',
@@ -23,6 +26,14 @@ export class CreateCustomerDto extends OmitType(CustomerDto, [
   @Type(() => CreateCustomerAddressDto)
   @Expose()
   addresses: CreateCustomerAddressDto[];
+
+  @ApiProperty({
+    description: 'Phone numbers of the customer',
+    type: CreateCustomerPhoneDto
+  })
+  @Type(() => CreateCustomerPhoneDto)
+  @Expose()
+  phones: CreateCustomerPhoneDto[];
 
   @IsString()
   @IsNotEmpty()

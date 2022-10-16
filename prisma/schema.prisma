@@ -15,9 +15,9 @@ model documentTypes {
   name           String      @unique @db.VarChar(36)
   customers      customers[]
   createdAt      DateTime    @default(now())
-  createdBy      String      @db.VarChar(150)
+  createdBy      String      @db.VarChar(80)
   updatedAt      DateTime    @updatedAt
-  updatedBy      String      @db.VarChar(150)
+  updatedBy      String      @db.VarChar(80)
 }
 
 model titles {
@@ -25,27 +25,28 @@ model titles {
   name      String      @unique @db.VarChar(24)
   customers customers[]
   createdAt DateTime    @default(now())
-  createdBy String      @db.VarChar(150)
+  createdBy String      @db.VarChar(80)
   updatedAt DateTime    @updatedAt
-  updatedBy String      @db.VarChar(150)
+  updatedBy String      @db.VarChar(80)
 }
 
 model customers {
   customerId     Int           @id @default(autoincrement())
   initials       String?       @db.VarChar(10)
-  firstName      String        @db.VarChar(150)
-  lastName       String?       @db.VarChar(150)
+  firstName      String        @db.VarChar(80)
+  lastName       String?       @db.VarChar(80)
   documentId     String        @db.VarChar(24)
   documentType   documentTypes @relation(fields: [documentTypeId], references: [documentTypeId], onUpdate: Restrict)
   documentTypeId Int
   createdAt      DateTime      @default(now())
-  createdBy      String        @db.VarChar(150)
+  createdBy      String        @db.VarChar(80)
   updatedAt      DateTime      @updatedAt
-  updatedBy      String        @db.VarChar(150)
+  updatedBy      String        @db.VarChar(80)
   addresses      addresses[]
   title          titles?       @relation(fields: [titleId], references: [titleId])
   titleId        Int?
   invoices       invoices[]
+  phones         phones[]
 
   @@unique([documentId, documentTypeId])
 }
@@ -62,6 +63,13 @@ model addresses {
   customerId Int
 }
 
+model phones {
+  phoneId    Int       @id @default(autoincrement())
+  number     String    @db.VarChar(16)
+  customer   customers @relation(fields: [customerId], references: [customerId], onUpdate: Cascade, onDelete: Cascade)
+  customerId Int
+}
+
 model invoices {
   invoiceId       Int               @id @default(autoincrement())
   invoice         String            @unique @db.VarChar(12)
@@ -73,9 +81,9 @@ model invoices {
   customer        customers         @relation(fields: [customerId], references: [customerId], onUpdate: Restrict)
   customerId      Int
   createdAt       DateTime          @default(now())
-  createdBy       String            @db.VarChar(150)
+  createdBy       String            @db.VarChar(80)
   updatedAt       DateTime          @updatedAt
-  updatedBy       String            @db.VarChar(150)
+  updatedBy       String            @db.VarChar(80)
   invoicesDetails invoicesDetails[]
 }
 
@@ -86,9 +94,9 @@ model products {
   description     String?           @db.VarChar(224)
   price           Decimal           @db.Decimal(18, 2)
   createdAt       DateTime          @default(now())
-  createdBy       String            @db.VarChar(150)
+  createdBy       String            @db.VarChar(80)
   updatedAt       DateTime          @updatedAt
-  updatedBy       String            @db.VarChar(150)
+  updatedBy       String            @db.VarChar(80)
   invoicesDetails invoicesDetails[]
 }
 
