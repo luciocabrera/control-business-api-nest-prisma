@@ -6,7 +6,7 @@ import { CreateInvoiceDetailDto } from './create-invoice-detail.dto';
 
 export class CreateInvoiceDto extends OmitType(InvoiceDto, [
   'invoiceId',
-  'invoicesDetails',
+  'invoiceDetails',
   'customer',
   'createdAt',
   'createdBy',
@@ -19,5 +19,5 @@ export class CreateInvoiceDto extends OmitType(InvoiceDto, [
   })
   @Type(() => CreateInvoiceDetailDto)
   @Expose()
-  invoicesDetails: CreateInvoiceDetailDto[];
+  invoiceDetails: CreateInvoiceDetailDto[];
 }

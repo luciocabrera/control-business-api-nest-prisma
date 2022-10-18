@@ -84,7 +84,7 @@ model invoices {
   createdBy       String            @db.VarChar(80)
   updatedAt       DateTime          @updatedAt
   updatedBy       String            @db.VarChar(80)
-  invoicesDetails invoicesDetails[]
+  invoiceDetails  invoicesDetails[]
 }
 
 model products {

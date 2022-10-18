@@ -22,7 +22,7 @@ export class InvoicesService {
         subtotal,
         taxes,
         taxesPercentage,
-        invoicesDetails,
+        invoiceDetails,
         customer,
         ...rest
       } = invoice;
@@ -33,7 +33,7 @@ export class InvoicesService {
         subtotal: decimalToNumber(subtotal),
         taxes: decimalToNumber(taxes),
         taxesPercentage: decimalToNumber(taxesPercentage),
-        invoicesDetails: invoicesDetails.map(detail => {
+        invoiceDetails: invoiceDetails.map(detail => {
           const { quantity, priceUnit, priceQuantity, ...rest } = detail;
           return {
             ...rest,
@@ -59,7 +59,7 @@ export class InvoicesService {
             title: { select: { name: true } }
           }
         },
-        invoicesDetails: {
+        invoiceDetails: {
           include: { product: { select: { name: true, code: true } } }
         }
       }
@@ -85,7 +85,7 @@ export class InvoicesService {
             title: { select: { name: true } }
           }
         },
-        invoicesDetails: {
+        invoiceDetails: {
           include: { product: { select: { name: true, code: true } } }
         }
       },
@@ -95,7 +95,7 @@ export class InvoicesService {
   }
 
   async create(data: CreateInvoiceDto): Promise<InvoiceDto> {
-    const { invoicesDetails, customerId, ...rest } = data;
+    const { invoiceDetails, customerId, ...rest } = data;
     const createdBy = 'USER_ID_HERE';
     const updatedBy = 'USER_ID_HERE';
 
@@ -107,13 +107,13 @@ export class InvoicesService {
             title: { select: { name: true } }
           }
         },
-        invoicesDetails: {
+        invoiceDetails: {
           include: { product: { select: { name: true, code: true } } }
         }
       },
       data: {
         ...rest,
-        invoicesDetails: { create: invoicesDetails },
+        invoiceDetails: { create: invoiceDetails },
         customer: {
           connect: { customerId: customerId }
         },

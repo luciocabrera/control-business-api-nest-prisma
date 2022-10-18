@@ -8,7 +8,7 @@ import { PrismaInvoiceDetailDto } from './prisma-invoice-detail.dto';
 const invoiceWithParameters = Prisma.validator<Prisma.invoicesArgs>()({
   include: {
     customer: true,
-    invoicesDetails: {
+    invoiceDetails: {
       include: { product: { select: { name: true, code: true } } }
     }
   }
@@ -24,7 +24,7 @@ export class PrismaInvoiceDto
     'total',
     'taxes',
     'taxesPercentage',
-    'invoicesDetails'
+    'invoiceDetails'
   ])
   implements InvoiceWithParameters
 {
@@ -38,7 +38,7 @@ export class PrismaInvoiceDto
   })
   @Type(() => PrismaInvoiceDetailDto)
   @Expose()
-  invoicesDetails: PrismaInvoiceDetailDto[];
+  invoiceDetails: PrismaInvoiceDetailDto[];
 
   @Exclude()
   @ApiHideProperty()

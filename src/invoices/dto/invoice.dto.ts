@@ -48,7 +48,7 @@ export class InvoiceDto {
   })
   @Type(() => InvoiceDetailDto)
   @Expose()
-  invoicesDetails: InvoiceDetailDto[];
+  invoiceDetails: InvoiceDetailDto[];
 
   @Expose()
   @ApiProperty({
