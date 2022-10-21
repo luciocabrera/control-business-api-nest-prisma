@@ -3,26 +3,13 @@ import { Prisma } from '@prisma/client';
 import { Expose } from 'class-transformer';
 import { InvoiceDetailDto } from './invoice-detail.dto';
 
-// const invoiceDetailWithProduct = Prisma.validator<Prisma.invoicesDetailsArgs>()(
-//   {
-//     include: { product: true }
-//   }
-// );
-
-// type InvoiceDetailWithProduct = Prisma.invoicesDetailsGetPayload<
-//   typeof invoiceDetailWithProduct
-// >;
-
 export class PrismaInvoiceDetailDto extends OmitType(InvoiceDetailDto, [
   'quantity',
   'priceUnit',
   'priceQuantity',
-  'product'
-  // 'productNameWithCode',
-  //  'productDescription',
-  // 'productPrice'
+  'product',
+  'productNameWithCode'
 ]) {
-  // implements InvoiceDetailWithProduct
   @Expose()
   @ApiProperty({
     example: '1.5',

@@ -1,10 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Prisma, products } from '@prisma/client';
 import { Exclude, Expose } from 'class-transformer';
 import { MaxLength } from 'class-validator';
 import { ProductDto } from 'src/products/dto/product.dto';
-import { InvoiceDetailProductDto } from './invoice-detail-product.dto';
-
 export class InvoiceDetailDto {
   @Exclude()
   @ApiHideProperty()
@@ -22,24 +19,16 @@ export class InvoiceDetailDto {
     example: "{code:'ER', name:''}",
     description: 'The product name and code'
   })
-  product: ProductDto; // InvoiceDetailProductDto;
+  product: ProductDto;
 
-  // @Expose()
-  // @ApiProperty({
-  //   example: 'Cleaning Service',
-  //   description: 'The product description'
-  // })
-  // get productDescription() {
-  //   return this.product?.description;
-  // }
-  // @Expose()
-  // @ApiProperty({
-  //   example: 'Cleaning Service',
-  //   description: 'The product description'
-  // })
-  // get productPrice() {
-  //   return this.product?.price;
-  // }
+  @Expose()
+  @ApiProperty({
+    example: 'UREN: Cleaning Service',
+    description: 'Is the Cname of the product with its code'
+  })
+  get productNameWithCode() {
+    return `${this.product.code}: ${this.product.name}`;
+  }
 
   @Expose()
   @ApiProperty({

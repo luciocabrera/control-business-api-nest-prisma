@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { plainToInstance } from 'class-transformer';
-import { CustomerDto } from 'src/customers/dto/customer.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { decimalToNumber } from 'src/utils/decimal-to-number';
 import { serialize } from 'src/utils/serialize';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
-import { InvoiceCustomerDto } from './dto/invoice-customer';
-import { InvoiceDetailDto } from './dto/invoice-detail.dto';
 import { InvoiceDto } from './dto/invoice.dto';
 import { PrismaInvoiceDto } from './dto/prisma-invoice.dto';
 
@@ -16,9 +12,6 @@ export class InvoicesService {
   constructor(private prisma: PrismaService) {}
 
   private transformPrismaToInvoice(invoice: PrismaInvoiceDto): InvoiceDto {
-    // let transformedInvoice: Omit<InvoiceDto, 'customer'> & {
-    //   customer: InvoiceCustomerDto;
-    // };
     let transformedInvoice;
     if (invoice) {
       const {
@@ -27,24 +20,23 @@ export class InvoicesService {
         taxes,
         taxesPercentage,
         invoiceDetails,
-        //   customer,
+
         ...rest
       } = invoice;
       transformedInvoice = {
         ...rest,
-        //  customer: plainToInstance(InvoiceCustomerDto, customer),
         total: decimalToNumber(total),
         subtotal: decimalToNumber(subtotal),
         taxes: decimalToNumber(taxes),
         taxesPercentage: decimalToNumber(taxesPercentage),
         invoiceDetails: invoiceDetails.map(detail => {
           const { quantity, priceUnit, priceQuantity, ...rest } = detail;
-          return serialize(InvoiceDetailDto, {
+          return {
             ...rest,
             quantity: decimalToNumber(quantity),
             priceUnit: decimalToNumber(priceUnit),
             priceQuantity: decimalToNumber(priceQuantity)
-          });
+          };
         })
       };
     }
@@ -57,14 +49,12 @@ export class InvoicesService {
     const invoice = await this.prisma.invoices.findUnique({
       where,
       include: {
-        // customer: {
-        //   include: {
-        //     documentType: { select: { name: true } },
-        //     title: { select: { name: true } }
-        //   }
-        // },
         customer: true,
-        invoiceDetails: true
+        invoiceDetails: {
+          include: {
+            product: { select: { name: true, description: true, code: true } }
+          }
+        }
       }
     });
 
@@ -83,16 +73,11 @@ export class InvoicesService {
     const invoices = await this.prisma.invoices.findMany({
       include: {
         customer: true,
-        invoiceDetails: true
-        // customer: {
-        //   include: {
-        //     documentType: { select: { name: true } },
-        //     title: { select: { name: true } }
-        //   }
-        // },
-        // invoiceDetails: {
-        //   include: { product: { select: { name: true, code: true } } }
-        // }
+        invoiceDetails: {
+          include: {
+            product: { select: { name: true, description: true, code: true } }
+          }
+        }
       },
       ...params
     });
@@ -107,16 +92,11 @@ export class InvoicesService {
     const invoice = await this.prisma.invoices.create({
       include: {
         customer: true,
-        invoiceDetails: true
-        // customer: {
-        //   include: {
-        //     documentType: { select: { name: true } },
-        //     title: { select: { name: true } }
-        //   }
-        // },
-        // invoiceDetails: {
-        //   include: { product: { select: { name: true, code: true } } }
-        // }
+        invoiceDetails: {
+          include: {
+            product: { select: { name: true, description: true, code: true } }
+          }
+        }
       },
       data: {
         ...rest,
