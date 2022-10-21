@@ -19,7 +19,8 @@ export class CustomersService {
         documentType: { select: { name: true } },
         title: { select: { name: true } },
         addresses: true,
-        phones: true
+        phones: true,
+        emails: true
       }
     });
 
@@ -40,7 +41,8 @@ export class CustomersService {
         documentType: { select: { name: true } },
         title: { select: { name: true } },
         addresses: true,
-        phones: true
+        phones: true,
+        emails: true
       },
       ...params
     });
@@ -48,7 +50,8 @@ export class CustomersService {
   }
 
   async create(data: CreateCustomerDto): Promise<CustomerDto> {
-    const { addresses, phones, documentTypeName, titleName, ...rest } = data;
+    const { addresses, phones, emails, documentTypeName, titleName, ...rest } =
+      data;
     const createdBy = 'USER_ID_HERE';
     const updatedBy = 'USER_ID_HERE';
 
@@ -56,12 +59,16 @@ export class CustomersService {
       include: {
         documentType: true,
         addresses: true,
-        phones: true
+        phones: true,
+        emails: true
       },
       data: {
         ...rest,
         addresses: { create: { ...addresses } },
         phones: { create: { ...phones } },
+        emails: {
+          create: { ...emails }
+        },
         documentType: {
           connectOrCreate: {
             where: { name: documentTypeName },
@@ -93,15 +100,8 @@ export class CustomersService {
     where: Prisma.customersWhereUniqueInput,
     data: UpdateCustomerDto
   ): Promise<CustomerDto> {
-    const {
-      firstName,
-      lastName,
-      addresses,
-      phones,
-      documentId,
-      documentTypeName,
-      titleName
-    } = data;
+    const { addresses, phones, emails, documentTypeName, titleName, ...rest } =
+      data;
     const { customerId } = where;
     const createdBy = 'USER_ID_HERE';
     const updatedBy = 'USER_ID_HERE';
@@ -111,12 +111,11 @@ export class CustomersService {
       include: {
         documentType: true,
         addresses: true,
-        phones: true
+        phones: true,
+        emails: true
       },
       data: {
-        documentId,
-        firstName,
-        lastName,
+        ...rest,
         addresses: {
           deleteMany: { customerId: customerId },
           create: { ...addresses }
@@ -124,6 +123,10 @@ export class CustomersService {
         phones: {
           deleteMany: { customerId: customerId },
           create: { ...phones }
+        },
+        emails: {
+          deleteMany: { customerId: customerId },
+          create: { ...emails }
         },
         documentType: {
           connectOrCreate: {

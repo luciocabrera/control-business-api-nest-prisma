@@ -1,6 +1,8 @@
 import { ApiHideProperty, ApiProperty, OmitType } from '@nestjs/swagger';
 import { customers, Prisma } from '@prisma/client';
 import { Exclude, Expose, Type } from 'class-transformer';
+import { CustomerDto } from 'src/customers/dto/customer.dto';
+import { InvoiceCustomerDto } from './invoice-customer';
 import { InvoiceDetailDto } from './invoice-detail.dto';
 import { InvoiceDto } from './invoice.dto';
 import { PrismaInvoiceDetailDto } from './prisma-invoice-detail.dto';
@@ -8,9 +10,7 @@ import { PrismaInvoiceDetailDto } from './prisma-invoice-detail.dto';
 const invoiceWithParameters = Prisma.validator<Prisma.invoicesArgs>()({
   include: {
     customer: true,
-    invoiceDetails: {
-      include: { product: { select: { name: true, code: true } } }
-    }
+    invoiceDetails: true
   }
 });
 

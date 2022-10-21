@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, products } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { decimalToNumber } from 'src/utils/decimal-to-number';
 import { serialize } from 'src/utils/serialize';
 import { CreateProductDto } from './dto/create-product.dto';
+import { PrismaProductDto } from './dto/prisma-product.dto';
 import { ProductDto } from './dto/product.dto';
 
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
-  private transformPrismaToProduct(
-    product: Omit<ProductDto, 'price'> & { price: Prisma.Decimal }
-  ): ProductDto {
-    let transformedProduct: ProductDto;
+  private transformPrismaToProduct(product: PrismaProductDto): ProductDto {
+    let transformedProduct: Omit<ProductDto, 'nameWithCode'>;
     if (product) {
       const { price, ...rest } = product;
       transformedProduct = {

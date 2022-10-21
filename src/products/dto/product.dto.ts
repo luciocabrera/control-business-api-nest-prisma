@@ -47,12 +47,21 @@ export class ProductDto {
   @IsNotEmpty()
   @Expose()
   @MaxLength(224)
-  @IsOptional()
   @ApiProperty({
     example: 'Cleaning Service',
-    description: 'The product name'
+    description: 'The product description'
   })
-  description?: string;
+  description: string;
+
+  @IsString()
+  @Expose()
+  @ApiProperty({
+    example: 'UREN: Cleaning Service',
+    description: 'Is the Cname of the product with its code'
+  })
+  get nameWithCode() {
+    return `${this.code}: ${this.name}`;
+  }
 
   @Expose()
   @ApiProperty({
@@ -60,16 +69,6 @@ export class ProductDto {
     description: 'The product name'
   })
   price: number;
-
-  // // @IsString()
-  // @Expose()
-  // @ApiProperty({
-  //   example: '12.5',
-  //   description: 'The product name'
-  // })
-  // get priceDecimal() {
-  //   return this.price.toNumber();
-  // }
 
   @Expose()
   @ApiProperty({

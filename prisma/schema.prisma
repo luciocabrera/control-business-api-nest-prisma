@@ -47,6 +47,7 @@ model customers {
   titleId        Int?
   invoices       invoices[]
   phones         phones[]
+  emails         emails[]
 
   @@unique([documentId, documentTypeId])
 }
@@ -66,6 +67,13 @@ model addresses {
 model phones {
   phoneId    Int       @id @default(autoincrement())
   number     String    @db.VarChar(16)
+  customer   customers @relation(fields: [customerId], references: [customerId], onUpdate: Cascade, onDelete: Cascade)
+  customerId Int
+}
+
+model emails {
+  emailId    Int       @id @default(autoincrement())
+  email      String    @db.VarChar(120)
   customer   customers @relation(fields: [customerId], references: [customerId], onUpdate: Cascade, onDelete: Cascade)
   customerId Int
 }
@@ -104,6 +112,7 @@ model invoicesDetails {
   quantity      Decimal  @db.Decimal(18, 2)
   priceUnit     Decimal  @db.Decimal(18, 2)
   priceQuantity Decimal  @db.Decimal(18, 2)
+  description   String   @db.VarChar(160)
   invoice       invoices @relation(fields: [invoiceId], references: [invoiceId], onUpdate: Cascade, onDelete: Cascade)
   invoiceId     Int
   product       products @relation(fields: [productId], references: [productId], onUpdate: Restrict)

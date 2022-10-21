@@ -3,6 +3,7 @@ import { documentTypes, Prisma, titles } from '@prisma/client';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { AddressDto } from 'src/addresses/dto/address.dto';
+import { EmailDto } from 'src/emails/dto/email.dto';
 import { PhoneDto } from 'src/phones/dto/phone.dto';
 
 const customerWithParameters = Prisma.validator<Prisma.customersArgs>()({
@@ -10,7 +11,8 @@ const customerWithParameters = Prisma.validator<Prisma.customersArgs>()({
     documentType: true, // { select: { name: true } },
     title: true,
     addresses: true,
-    phones: true
+    phones: true,
+    emails: true
   }
 });
 
@@ -57,6 +59,19 @@ export class CustomerDto implements CustomerWithParameters {
     description: 'The last name of the customer'
   })
   lastName: string = '';
+
+  @IsString()
+  @Expose()
+  @ApiProperty({
+    example: 'LC Lucio Cabrera',
+    description: 'Is the Customer full name including the initials'
+  })
+  get fullNameWithInitials() {
+    let fullName = this.initials
+      ? `${this.initials} ${this.firstName}`
+      : this.firstName;
+    return this.lastName ? `${fullName} ${this.lastName}` : fullName;
+  }
 
   @Exclude()
   @ApiHideProperty()
@@ -120,6 +135,20 @@ export class CustomerDto implements CustomerWithParameters {
   @Expose()
   get defaultPhone() {
     return this.phones?.[0];
+  }
+
+  @Expose()
+  @ApiProperty({
+    description: 'Emails of the customer',
+    type: EmailDto
+  })
+  @Type(() => EmailDto)
+  @Expose()
+  emails: EmailDto[];
+
+  @Expose()
+  get defaultEmail() {
+    return this.emails?.[0];
   }
 
   @IsString()

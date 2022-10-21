@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger';
-import { CreatePhoneDto } from 'src/phones/dto/create-phone.dto';
+import { CreateAddressDto } from 'src/addresses/dto/create-address.dto';
 
-export class CreateCustomerPhoneDto extends OmitType(CreatePhoneDto, [
+export class CreateCustomerAddressDto extends OmitType(CreateAddressDto, [
   'customerId'
 ]) {}

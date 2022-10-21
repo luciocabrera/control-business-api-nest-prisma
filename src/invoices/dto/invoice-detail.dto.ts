@@ -1,6 +1,9 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { products } from '@prisma/client';
+import { Prisma, products } from '@prisma/client';
 import { Exclude, Expose } from 'class-transformer';
+import { MaxLength } from 'class-validator';
+import { ProductDto } from 'src/products/dto/product.dto';
+import { InvoiceDetailProductDto } from './invoice-detail-product.dto';
 
 export class InvoiceDetailDto {
   @Exclude()
@@ -19,7 +22,24 @@ export class InvoiceDetailDto {
     example: "{code:'ER', name:''}",
     description: 'The product name and code'
   })
-  product: Pick<products, 'code' | 'name'>;
+  product: ProductDto; // InvoiceDetailProductDto;
+
+  // @Expose()
+  // @ApiProperty({
+  //   example: 'Cleaning Service',
+  //   description: 'The product description'
+  // })
+  // get productDescription() {
+  //   return this.product?.description;
+  // }
+  // @Expose()
+  // @ApiProperty({
+  //   example: 'Cleaning Service',
+  //   description: 'The product description'
+  // })
+  // get productPrice() {
+  //   return this.product?.price;
+  // }
 
   @Expose()
   @ApiProperty({
@@ -27,6 +47,14 @@ export class InvoiceDetailDto {
     description: 'The quantity as a number'
   })
   quantity: number;
+
+  @Expose()
+  @MaxLength(160)
+  @ApiProperty({
+    example: 'Cleaning service carried out on 26/01/2022',
+    description: 'The Description of the details'
+  })
+  description: string;
 
   @Expose()
   @ApiProperty({
