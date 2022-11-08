@@ -118,5 +118,5 @@ model invoicesDetails {
   product       products @relation(fields: [productId], references: [productId], onUpdate: Restrict)
   productId     Int
 
-  @@unique([invoiceId, productId])
+  @@unique([invoiceId, productId, description])
 }
