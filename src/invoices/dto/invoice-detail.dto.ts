@@ -9,6 +9,12 @@ export class InvoiceDetailDto {
 
   @Expose()
   @ApiProperty({
+    description: 'The date when the service was carried out'
+  })
+  date: Date;
+
+  @Expose()
+  @ApiProperty({
     example: '1',
     description: 'The product Id'
   })

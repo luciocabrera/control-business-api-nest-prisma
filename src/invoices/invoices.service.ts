@@ -111,55 +111,38 @@ export class InvoicesService {
     return this.transformPrismaToInvoice(invoice);
   }
 
-  // async update(
-  //   where: Prisma.invoicesWhereUniqueInput,
-  //   data: UpdateinvoiceDto
-  // ): Promise<InvoiceDto> {
-  //   const { firstName, lastName, addresses, documentTypeName, titleName } =
-  //     data;
-  //   const { invoiceId } = where;
-  //   const createdBy = 'USER_ID_HERE';
-  //   const updatedBy = 'USER_ID_HERE';
+  async update(
+    where: Prisma.invoicesWhereUniqueInput,
+    data: CreateInvoiceDto
+  ): Promise<InvoiceDto> {
+    const { invoiceDetails, customerId, ...rest } = data;
 
-  //   const invoice = await this.prisma.invoices.update({
-  //     where,
-  //     include: {
-  //       documentType: true,
-  //       addresses: true
-  //     },
-  //     data: {
-  //       firstName,
-  //       lastName,
-  //       addresses: {
-  //         deleteMany: { invoiceId: invoiceId },
-  //         create: { ...addresses }
-  //       },
-  //       documentType: {
-  //         connectOrCreate: {
-  //           where: { name: documentTypeName },
-  //           create: {
-  //             name: documentTypeName,
-  //             createdBy,
-  //             updatedBy
-  //           }
-  //         }
-  //       },
-  //       title: {
-  //         connectOrCreate: {
-  //           where: { name: titleName },
-  //           create: {
-  //             name: titleName,
-  //             createdBy,
-  //             updatedBy
-  //           }
-  //         }
-  //       },
-  //       createdBy,
-  //       updatedBy
-  //     }
-  //   });
-  //   return plainToInstance(InvoiceDto, invoice);
-  // }
+    const updatedBy = 'USER_ID_HERE';
+    const { invoiceId } = where;
+    const invoice = await this.prisma.invoices.update({
+      where,
+      include: {
+        customer: true,
+        invoiceDetails: {
+          include: {
+            product: { select: { name: true, description: true, code: true } }
+          }
+        }
+      },
+      data: {
+        ...rest,
+        invoiceDetails: {
+          deleteMany: { invoiceId },
+          create: invoiceDetails
+        },
+        customer: {
+          connect: { customerId: customerId }
+        },
+        updatedBy
+      }
+    });
+    return this.transformPrismaToInvoice(invoice);
+  }
 
   async delete(where: Prisma.invoicesWhereUniqueInput): Promise<void> {
     await this.prisma.invoices.delete({ where });

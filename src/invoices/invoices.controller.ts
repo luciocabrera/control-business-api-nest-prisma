@@ -50,15 +50,15 @@ export class InvoicesController {
     return this.invoicesService.findUnique({ invoiceId });
   }
 
-  // @Patch(':invoiceId')
-  // @ApiOperation({ summary: 'Update a invoice by its id' })
-  // @ApiOkResponse({ type: InvoiceDto })
-  // update(
-  //   @Param('invoiceId', ParseIntPipe) invoiceId: number,
-  //   @Body() updateJobDto: UpdateInvoiceDto
-  // ) {
-  //   return this.invoicesService.update({ invoiceId }, updateJobDto);
-  // }
+  @Patch(':invoiceId')
+  @ApiOperation({ summary: 'Update a invoice by its id' })
+  @ApiOkResponse({ type: InvoiceDto })
+  update(
+    @Param('invoiceId', ParseIntPipe) invoiceId: number,
+    @Body() updateJobDto: CreateInvoiceDto
+  ) {
+    return this.invoicesService.update({ invoiceId }, updateJobDto);
+  }
 
   @Delete(':invoiceId')
   @Get(':invoiceId')

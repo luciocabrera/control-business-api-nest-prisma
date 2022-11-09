@@ -109,6 +109,7 @@ model products {
 }
 
 model invoicesDetails {
+  date          DateTime
   quantity      Decimal  @db.Decimal(18, 2)
   priceUnit     Decimal  @db.Decimal(18, 2)
   priceQuantity Decimal  @db.Decimal(18, 2)
@@ -118,5 +119,5 @@ model invoicesDetails {
   product       products @relation(fields: [productId], references: [productId], onUpdate: Restrict)
   productId     Int
 
-  @@unique([invoiceId, productId, description])
+  @@unique([date, invoiceId, productId, description])
 }
